@@ -2,8 +2,8 @@ package com.bookstore.core.repository.impl;
 
 import com.bookstore.core.model.Book;
 import com.bookstore.core.repository.BookRepository;
-import jakarta.persistence.criteria.CriteriaQuery;
 import java.util.List;
+import java.util.Optional;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -44,12 +44,18 @@ public class BookRepositoryImpl implements BookRepository {
     @Override
     public List<Book> findAll() {
         try (Session session = sessionFactory.openSession()) {
-            CriteriaQuery<Book> criteriaQuery = session.getCriteriaBuilder()
-                    .createQuery(Book.class);
-            criteriaQuery.from(Book.class);
-            return session.createQuery(criteriaQuery).getResultList();
+            return session.createQuery("FROM Book", Book.class).getResultList();
         } catch (Exception e) {
-            throw new RuntimeException("Can't get all movies", e);
+            throw new RuntimeException("Can't get all books", e);
+        }
+    }
+
+    @Override
+    public Optional<Book> getBookById(Long id) {
+        try (Session session = sessionFactory.openSession()) {
+            return Optional.ofNullable(session.find(Book.class, id));
+        } catch (Exception e) {
+            throw new RuntimeException("Can't get book with id: " + id, e);
         }
     }
 }
