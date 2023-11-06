@@ -1,24 +1,36 @@
 package com.bookstore.core.service.impl;
 
-import com.bookstore.core.model.Book;
+import com.bookstore.core.dto.BookDto;
+import com.bookstore.core.dto.CreateBookRequestDto;
+import com.bookstore.core.exception.EntityNotFoundException;
+import com.bookstore.core.mapper.BookMapper;
 import com.bookstore.core.repository.BookRepository;
 import com.bookstore.core.service.BookService;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class BookServiceImpl implements BookService {
-    @Autowired
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
+    private final BookMapper bookMapper;
 
     @Override
-    public Book save(Book book) {
-        return bookRepository.save(book);
+    public BookDto save(CreateBookRequestDto book) {
+        return bookMapper.toDto(bookRepository.save(bookMapper.toModel(book)));
     }
 
     @Override
-    public List<Book> findAll() {
-        return bookRepository.findAll();
+    public List<BookDto> findAll() {
+        return bookRepository.findAll().stream()
+                .map(bookMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    public BookDto getBookById(Long id) {
+        return bookMapper.toDto(bookRepository.getBookById(id).orElseThrow(
+                () -> new EntityNotFoundException("Can't get book with id: " + id)));
     }
 }
