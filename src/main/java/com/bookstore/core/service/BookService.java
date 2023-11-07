@@ -5,9 +5,13 @@ import com.bookstore.core.dto.CreateBookRequestDto;
 import java.util.List;
 
 public interface BookService {
-    BookDto save(CreateBookRequestDto book);
+    BookDto save(CreateBookRequestDto bookDto);
 
     List<BookDto> findAll();
 
     BookDto getBookById(Long id);
+
+    BookDto updateById(Long id, CreateBookRequestDto bookDto);
+
+    void deleteById(Long id);
 }
