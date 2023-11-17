@@ -3,3 +3,5 @@ databaseChangeLog:
       file: db/changelog/changes/01-create-book-table.yaml
   - include:
       file: db/changelog/changes/02-implement-books-soft-deletion.yaml
+  - include:
+      file: db/changelog/changes/03-create-user-table.yaml
