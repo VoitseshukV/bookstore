@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-default-roles
+      author: voitseshuk
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: name
+                  value: 0
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: name
+                  value: 1
