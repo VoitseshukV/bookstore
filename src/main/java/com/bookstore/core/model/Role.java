@@ -1,6 +1,5 @@
 package com.bookstore.core.model;
 
-import com.bookstore.core.security.RoleName;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,6 +19,11 @@ public class Role {
     @NotNull
     @Column(unique = true)
     private RoleName name;
+
+    public enum RoleName {
+        ADMIN,
+        USER
+    }
 
     public Role() {
 
