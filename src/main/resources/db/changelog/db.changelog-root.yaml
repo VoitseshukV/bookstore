@@ -5,3 +5,13 @@ databaseChangeLog:
       file: db/changelog/changes/02-implement-books-soft-deletion.yaml
   - include:
       file: db/changelog/changes/03-create-user-table.yaml
+  - include:
+      file: db/changelog/changes/04-change-password-field-length.yaml
+  - include:
+      file: db/changelog/changes/05-implement-users-soft-deletion.yaml
+  - include:
+      file: db/changelog/changes/06-create-roles-table.yaml
+  - include:
+      file: db/changelog/changes/07-create-users-roles-table.yaml
+  - include:
+      file: db/changelog/changes/08-add-default-roles.yaml
