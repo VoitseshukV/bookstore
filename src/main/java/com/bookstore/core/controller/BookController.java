@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Book catalog", description = "Endpoint for managing books list")
+@Tag(name = "Books endpoint", description = "Endpoint for managing books list")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/api/books")
@@ -39,8 +39,8 @@ public class BookController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public BookDto createBook(@RequestBody @Valid CreateBookRequestDto bookDto) {
-        return bookService.save(bookDto);
+    public BookDto createBook(@RequestBody @Valid CreateBookRequestDto requestDto) {
+        return bookService.save(requestDto);
     }
 
     @Operation(summary = "Book details", description = "Get book data by ID")
@@ -53,8 +53,8 @@ public class BookController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public BookDto updateBookById(@PathVariable Long id,
-                                  @RequestBody @Valid CreateBookRequestDto bookDto) {
-        return bookService.updateById(id, bookDto);
+                                  @RequestBody @Valid CreateBookRequestDto requestDto) {
+        return bookService.updateById(id, requestDto);
     }
 
     @Operation(summary = "Delete book", description = "Delete book entry by ID")
