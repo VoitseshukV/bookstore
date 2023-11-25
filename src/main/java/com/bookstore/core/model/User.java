@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,6 +35,7 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
     @NotNull
+    @ToString.Exclude
     private String password;
     @NotNull
     private String firstName;

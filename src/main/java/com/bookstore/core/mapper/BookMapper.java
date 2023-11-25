@@ -6,14 +6,18 @@ import com.bookstore.core.dto.BookDtoWithoutCategoryIds;
 import com.bookstore.core.dto.CreateBookRequestDto;
 import com.bookstore.core.model.Book;
 import com.bookstore.core.model.Category;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
 @Mapper(config = MapperConfig.class, uses = CategoryMapper.class)
 public interface BookMapper {
 
+    @Mapping(target = "categoryIds", ignore = true)
     BookDto toDto(Book book);
 
     BookDtoWithoutCategoryIds toDtoWithoutCategories(Book book);
@@ -35,5 +39,12 @@ public interface BookMapper {
         book.setCategories(requestDto.categoryIds().stream()
                 .map(Category::new)
                 .collect(Collectors.toUnmodifiableSet()));
+    }
+
+    @Named("bookById")
+    default Book bookFromId(Long id) {
+        return Optional.ofNullable(id)
+                .map(Book::new)
+                .orElse(null);
     }
 }

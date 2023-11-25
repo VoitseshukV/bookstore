@@ -33,7 +33,7 @@ public class CategoryController {
 
     @Operation(summary = "Get all categories", description = "Get list of book categories")
     @GetMapping
-    public List<CategoryDto> getAllBooks(Pageable pageable) {
+    public List<CategoryDto> getAllCategories(Pageable pageable) {
         return categoryService.findAll(pageable);
     }
 
@@ -54,7 +54,7 @@ public class CategoryController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public CategoryDto createBook(@RequestBody @Valid CreateCategoryRequestDto requestDto) {
+    public CategoryDto createCategory(@RequestBody @Valid CreateCategoryRequestDto requestDto) {
         return categoryService.save(requestDto);
     }
 
