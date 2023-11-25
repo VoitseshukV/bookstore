@@ -40,7 +40,7 @@ public class ShoppingCartController {
     @Operation(summary = "Add book to shopping cart",
             description = "Add book to shopping cart")
     @PostMapping
-    public void addBook(
+    public void addCartItem(
             Authentication authentication,
             @RequestBody @Valid AddCartItemRequestDto requestDto
     ) {
@@ -51,7 +51,7 @@ public class ShoppingCartController {
     @Operation(summary = "Update cart item",
             description = "Update books quantity in shopping cart")
     @PutMapping("/items/{id}")
-    public void updateCategoryById(
+    public void updateCartItemById(
             Authentication authentication,
             @PathVariable Long id,
             @RequestBody @Valid UpdateCartItemRequestDto requestDto
@@ -64,7 +64,7 @@ public class ShoppingCartController {
             description = "Delete book from shopping cart")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/items/{id}")
-    public void deleteBookById(Authentication authentication, @PathVariable Long id) {
+    public void deleteCartItemById(Authentication authentication, @PathVariable Long id) {
         String email = authentication.getName();
         cartItemService.deleteItem(email, id);
     }
