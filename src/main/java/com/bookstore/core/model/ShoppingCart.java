@@ -9,11 +9,13 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "shopping_carts")
 public class ShoppingCart {
     @Id
@@ -23,7 +25,6 @@ public class ShoppingCart {
     @MapsId
     @JoinColumn(name = "id")
     private User user;
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name="shopping_cart_id")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "shoppingCart")
     private Set<CartItem> cartItems;
 }
