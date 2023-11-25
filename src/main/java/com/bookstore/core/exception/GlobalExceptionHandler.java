@@ -32,7 +32,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(responseObject, headers, status);
     }
 
-    @ExceptionHandler({ RegistrationException.class })
+    @ExceptionHandler({
+            RegistrationException.class,
+            LoginException.class
+    })
     protected ResponseEntity<Object> handleRegistrationException(Exception ex, WebRequest request) {
         Map<String, Object> responseObject = new LinkedHashMap<>();
         responseObject.put("timestamp", LocalDateTime.now());
