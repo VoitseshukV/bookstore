@@ -1,6 +1,7 @@
 package com.bookstore.core.service.impl;
 
 import com.bookstore.core.dto.BookDto;
+import com.bookstore.core.dto.BookDtoWithoutCategoryIds;
 import com.bookstore.core.dto.BookSearchParametersDto;
 import com.bookstore.core.dto.CreateBookRequestDto;
 import com.bookstore.core.exception.EntityNotFoundException;
@@ -8,6 +9,7 @@ import com.bookstore.core.mapper.BookMapper;
 import com.bookstore.core.model.Book;
 import com.bookstore.core.repository.book.BookRepository;
 import com.bookstore.core.repository.book.BookSpecificationBuilder;
+import com.bookstore.core.repository.category.CategoryRepository;
 import com.bookstore.core.service.BookService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
+    private final CategoryRepository categoryRepository;
     private final BookMapper bookMapper;
     private final BookSpecificationBuilder bookSpecificationBuilder;
 
@@ -60,6 +63,16 @@ public class BookServiceImpl implements BookService {
         Specification<Book> bookSpecification = bookSpecificationBuilder.build(searchParameters);
         return bookRepository.findAll(bookSpecification).stream()
                 .map(bookMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    public List<BookDtoWithoutCategoryIds> findAllByCategoryId(Long id) {
+        if (!categoryRepository.existsById(id)) {
+            throw new EntityNotFoundException("Can't get category with id: " + id);
+        }
+        return bookRepository.findAllByCategoryId(id).stream()
+                .map(bookMapper::toDtoWithoutCategories)
                 .toList();
     }
 }

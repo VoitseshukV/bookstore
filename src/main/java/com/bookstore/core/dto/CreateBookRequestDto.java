@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
+import java.util.Set;
 
 public record CreateBookRequestDto(
         @NotBlank
@@ -22,6 +23,7 @@ public record CreateBookRequestDto(
         @Positive
         BigDecimal price,
         String description,
-        String coverImage
+        String coverImage,
+        Set<Long> categoryIds
 ) {
 }
