@@ -1,5 +1,6 @@
 package com.bookstore.core.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,11 +17,15 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "orders")
+@SQLDelete(sql = "UPDATE orders SET is_deleted = true WHERE id=?")
+@Where(clause = "is_deleted=false")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,7 +42,7 @@ public class Order {
     private LocalDateTime orderDate;
     @NotNull
     private String shippingAddress;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "order", cascade = CascadeType.ALL)
     private Set<OrderItem> orderItems;
     @Column(name = "is_deleted")
     @NotNull
@@ -48,6 +53,7 @@ public class Order {
         PAID,
         SENT,
         DELIVERED,
-        COMPLETED
+        COMPLETED,
+        CANCELLED
     }
 }

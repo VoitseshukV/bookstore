@@ -35,7 +35,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({
             RegistrationException.class,
             LoginException.class,
-            EntityNotFoundException.class
+            EntityNotFoundException.class,
+            OrderException.class
     })
     protected ResponseEntity<Object> handleRegistrationException(Exception ex, WebRequest request) {
         Map<String, Object> responseObject = new LinkedHashMap<>();
