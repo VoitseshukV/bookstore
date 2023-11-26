@@ -1,0 +1,43 @@
+version: '3.9'
+services:
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_DATABASE: $MYSQL_DATABASE
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
+    ports:
+      - $MYSQL_LOCAL_PORT:$MYSQL_DOCKER_PORT
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin ping -hlocalhost -uroot -p$MYSQL_ROOT_PASSWORD" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - mysql-data:/var/lib/mysql
+  webapp:
+    image: bookstore
+    build: .
+    env_file: ./.env
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:$MYSQL_LOCAL_PORT/$MYSQL_DATABASE
+      SPRING_DATASOURCE_USERNAME: $MYSQL_USER
+      SPRING_DATASOURCE_PASSWORD: $MYSQL_PASSWORD
+      SPRING_APPLICATION_JSON:
+        '{
+        "spring.liquibase.change-log": "classpath:db/changelog/db.changelog-root.yaml",
+        "spring.jpa.hibernate.ddl-auto": "validate",
+        "spring.jpa.open-in-view": false,
+        "jwt.expiration": 3600000,
+        "jwt.secret": "$JWT_SECRET"
+        }'
+      JAVA_OPTS:
+        "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:$DEBUG_DOCKER_PORT"
+    ports:
+      - $SPRING_LOCAL_PORT:$SPRING_DOCKER_PORT
+      - $DEBUG_LOCAL_PORT:$DEBUG_DOCKER_PORT
+    depends_on:
+      - mysql
+volumes:
+  mysql-data:
