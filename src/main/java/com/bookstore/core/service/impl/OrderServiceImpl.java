@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,10 +34,10 @@ public class OrderServiceImpl implements OrderService {
     private final CartItemRepository cartItemRepository;
 
     @Override
-    public List<OrderDto> getOrders(String email) {
+    public List<OrderDto> getOrders(String email, Pageable pageable) {
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new EntityNotFoundException("Can't get user with email: " + email));
-        return orderRepository.findAllByUser(user).stream()
+        return orderRepository.findAllByUser(user, pageable).stream()
                 .map(orderMapper::toDto)
                 .toList();
     }

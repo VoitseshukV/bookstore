@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,9 +33,12 @@ public class OrderController {
     @Operation(summary = "Get orders",
             description = "Get current user's orders")
     @GetMapping
-    public List<OrderDto> getOrders(Authentication authentication) {
+    public List<OrderDto> getOrders(
+            Authentication authentication,
+            @ParameterObject Pageable pageable
+    ) {
         String email = authentication.getName();
-        return orderService.getOrders(email);
+        return orderService.getOrders(email, pageable);
     }
 
     @Operation(summary = "Add new order",
