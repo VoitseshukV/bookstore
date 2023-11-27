@@ -6,8 +6,8 @@ import com.bookstore.core.exception.EntityNotFoundException;
 import com.bookstore.core.model.Book;
 import com.bookstore.core.model.CartItem;
 import com.bookstore.core.model.ShoppingCart;
-import com.bookstore.core.repository.book.BookRepository;
 import com.bookstore.core.repository.cart.CartItemRepository;
+import com.bookstore.core.service.BookService;
 import com.bookstore.core.service.CartItemService;
 import com.bookstore.core.service.ShoppingCartService;
 import java.util.Objects;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CartItemServiceImpl implements CartItemService {
     private final CartItemRepository cartItemRepository;
     private final ShoppingCartService shoppingCartService;
-    private final BookRepository bookRepository;
+    private final BookService bookService;
 
     @Override
     @Transactional
@@ -34,9 +34,7 @@ public class CartItemServiceImpl implements CartItemService {
         } else {
             cartItem = new CartItem();
             cartItem.setShoppingCart(shoppingCart);
-            Book book = bookRepository.findById(requestDto.bookId()).orElseThrow(
-                    () -> new EntityNotFoundException(
-                            "Can't get book with id: " + requestDto.bookId()));
+            Book book = bookService.getById(requestDto.bookId());
             cartItem.setBook(book);
             cartItem.setQuantity(requestDto.quantity());
         }
@@ -46,26 +44,29 @@ public class CartItemServiceImpl implements CartItemService {
     @Override
     @Transactional
     public void updateItem(String email, Long id, UpdateCartItemRequestDto requestDto) {
-        Optional<CartItem> optionalCartItem = cartItemRepository.findById(id);
-        if (optionalCartItem.isEmpty() || !Objects.equals(
-                optionalCartItem.get().getShoppingCart().getUser().getEmail(), email)
-        ) {
-            throw new EntityNotFoundException("Can't find cart entity with id " + id);
-        }
-        CartItem cartItem = optionalCartItem.get();
+        CartItem cartItem = getByIdAndEmail(id, email);
         cartItem.setQuantity(requestDto.quantity());
         cartItemRepository.save(cartItem);
     }
 
     @Override
     public void deleteItem(String email, Long id) {
+        CartItem cartItem = getByIdAndEmail(id, email);
+        cartItemRepository.delete(cartItem);
+    }
+
+    @Override
+    public void delete(CartItem cartItem) {
+        cartItemRepository.delete(cartItem);
+    }
+
+    private CartItem getByIdAndEmail(Long id, String email) {
         Optional<CartItem> optionalCartItem = cartItemRepository.findById(id);
         if (optionalCartItem.isEmpty() || !Objects.equals(
                 optionalCartItem.get().getShoppingCart().getUser().getEmail(), email)
         ) {
             throw new EntityNotFoundException("Can't find cart entity with id " + id);
         }
-        CartItem cartItem = optionalCartItem.get();
-        cartItemRepository.delete(cartItem);
+        return optionalCartItem.get();
     }
 }

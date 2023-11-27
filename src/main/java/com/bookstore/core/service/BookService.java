@@ -4,6 +4,7 @@ import com.bookstore.core.dto.BookDto;
 import com.bookstore.core.dto.BookDtoWithoutCategoryIds;
 import com.bookstore.core.dto.BookSearchParametersDto;
 import com.bookstore.core.dto.CreateBookRequestDto;
+import com.bookstore.core.model.Book;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 
@@ -12,7 +13,9 @@ public interface BookService {
 
     List<BookDto> findAll(Pageable pageable);
 
-    BookDto getBookById(Long id);
+    BookDto getDtoById(Long id);
+
+    Book getById(Long id);
 
     BookDto updateById(Long id, CreateBookRequestDto requestDto);
 

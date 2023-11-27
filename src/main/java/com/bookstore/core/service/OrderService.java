@@ -2,15 +2,23 @@ package com.bookstore.core.service;
 
 import com.bookstore.core.dto.OrderDto;
 import com.bookstore.core.dto.UpdateOrderDto;
+import com.bookstore.core.model.CartItem;
+import com.bookstore.core.model.Order;
+import com.bookstore.core.model.OrderItem;
+import com.bookstore.core.model.User;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 
 public interface OrderService {
     List<OrderDto> getOrders(String email, Pageable pageable);
 
-    void addOrder(String email);
+    OrderDto addOrder(String email);
 
     OrderDto getOrderById(String email, Long orderId);
 
     OrderDto updateOrderById(Long orderId, UpdateOrderDto requestDto);
+
+    Order findFirstByUserAndId(User user, Long orderId);
+
+    OrderItem addByCartItem(CartItem cartItem, Order order);
 }

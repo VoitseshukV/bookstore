@@ -2,6 +2,7 @@ package com.bookstore.core.service.impl;
 
 import com.bookstore.core.dto.UserRegistrationRequestDto;
 import com.bookstore.core.dto.UserResponseDto;
+import com.bookstore.core.exception.EntityNotFoundException;
 import com.bookstore.core.exception.RegistrationException;
 import com.bookstore.core.mapper.UserMapper;
 import com.bookstore.core.model.Role;
@@ -34,5 +35,11 @@ public class UserServiceImpl implements UserService {
         user.setRoles(Set.of(roleRepository.getByName(Role.RoleName.USER)));
         User savedUser = userRepository.save(user);
         return userMapper.toDto(savedUser);
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(
+                () -> new EntityNotFoundException("Can't get user with email: " + email));
     }
 }

@@ -44,9 +44,9 @@ public class OrderController {
     @Operation(summary = "Add new order",
             description = "Add a new order based on the user's shopping cart")
     @PostMapping
-    public void addOrder(Authentication authentication) {
+    public OrderDto addOrder(Authentication authentication) {
         String email = authentication.getName();
-        orderService.addOrder(email);
+        return orderService.addOrder(email);
     }
 
     @Operation(summary = "Get order", description = "Get order by ID")
