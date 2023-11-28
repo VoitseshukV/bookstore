@@ -58,14 +58,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto getOrderById(String email, Long orderId) {
         User user = userService.findByEmail(email);
-        return orderMapper.toDto(orderRepository.findFirstByUserAndId(user, orderId).orElseThrow(
+        return orderMapper.toDto(orderRepository.findByUserAndId(user, orderId).orElseThrow(
                 () -> new EntityNotFoundException("Can't find order with ID: " + orderId)));
     }
 
     @Override
     @Transactional
     public OrderDto updateOrderById(Long orderId, UpdateOrderDto requestDto) {
-        Order order = orderRepository.findFirstById(orderId).orElseThrow(
+        Order order = orderRepository.findById(orderId).orElseThrow(
                 () -> new EntityNotFoundException("Can't find order with ID: " + orderId));
         order.setStatus(Order.OrderStatus.valueOf(requestDto.status()));
         orderRepository.save(order);
@@ -74,7 +74,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order findFirstByUserAndId(User user, Long orderId) {
-        return orderRepository.findFirstByUserAndId(user, orderId).orElseThrow(
+        return orderRepository.findByUserAndId(user, orderId).orElseThrow(
                 () -> new EntityNotFoundException("Can't find order with ID: " + orderId));
     }
 

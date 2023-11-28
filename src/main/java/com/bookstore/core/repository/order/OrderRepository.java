@@ -10,7 +10,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findAllByUser(User user, Pageable pageable);
 
-    Optional<Order> findFirstByUserAndId(User user, Long id);
-
-    Optional<Order> findFirstById(Long id);
+    Optional<Order> findByUserAndId(User user, Long id);
 }
