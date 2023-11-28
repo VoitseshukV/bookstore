@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,7 +34,7 @@ public class CategoryController {
 
     @Operation(summary = "Get all categories", description = "Get list of book categories")
     @GetMapping
-    public List<CategoryDto> getAllCategories(Pageable pageable) {
+    public List<CategoryDto> getAllCategories(@ParameterObject Pageable pageable) {
         return categoryService.findAll(pageable);
     }
 

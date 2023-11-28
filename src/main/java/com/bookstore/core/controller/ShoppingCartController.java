@@ -34,7 +34,7 @@ public class ShoppingCartController {
     @GetMapping
     public ShoppingCartDto getShoppingCart(Authentication authentication) {
         String email = authentication.getName();
-        return shoppingCartService.getShoppingCart(email);
+        return shoppingCartService.getByEmail(email);
     }
 
     @Operation(summary = "Add book to shopping cart",

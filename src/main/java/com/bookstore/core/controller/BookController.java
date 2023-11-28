@@ -46,7 +46,7 @@ public class BookController {
     @Operation(summary = "Book details", description = "Get book data by ID")
     @GetMapping("/{id}")
     public BookDto getBookById(@PathVariable Long id) {
-        return bookService.getBookById(id);
+        return bookService.getDtoById(id);
     }
 
     @Operation(summary = "Update book", description = "Update book information by ID")
