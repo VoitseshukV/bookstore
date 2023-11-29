@@ -21,7 +21,7 @@ services:
     build: .
     env_file: ./.env
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:$MYSQL_LOCAL_PORT/$MYSQL_DATABASE
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:$MYSQL_DOCKER_PORT/$MYSQL_DATABASE
       SPRING_DATASOURCE_USERNAME: $MYSQL_USER
       SPRING_DATASOURCE_PASSWORD: $MYSQL_PASSWORD
       SPRING_APPLICATION_JSON:
@@ -33,10 +33,10 @@ services:
         "jwt.secret": "$JWT_SECRET"
         }'
       JAVA_OPTS:
-        "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:$DEBUG_DOCKER_PORT"
+        "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:$DEBUG_PORT"
     ports:
       - $SPRING_LOCAL_PORT:$SPRING_DOCKER_PORT
-      - $DEBUG_LOCAL_PORT:$DEBUG_DOCKER_PORT
+      - $DEBUG_PORT
     depends_on:
       - mysql
 volumes:
