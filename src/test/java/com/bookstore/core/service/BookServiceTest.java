@@ -1,5 +1,9 @@
 package com.bookstore.core.service;
 
+import static com.bookstore.core.util.TestDataFactory.getBookDtoTemplateById;
+import static com.bookstore.core.util.TestDataFactory.getBookDtoWithoutCategoryIdsTemplateById;
+import static com.bookstore.core.util.TestDataFactory.getBookTemplateById;
+import static com.bookstore.core.util.TestDataFactory.getCreateBookRequestDtoTemplateById;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
@@ -22,10 +26,8 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,26 +58,9 @@ public class BookServiceTest {
     @DisplayName("save: Saving new book")
     public void save_ValidCreateBookRequestDto_ReturnValidBookDto() {
         // Given
-        CreateBookRequestDto requestDto = new CreateBookRequestDto(
-                "Anansi Boys",
-                "Gaiman Neil",
-                "9780060515195",
-                BigDecimal.valueOf(500),
-                "",
-                "",
-                Set.of());
-        Book book = new Book()
-                .setId(1L)
-                .setTitle(requestDto.title())
-                .setAuthor(requestDto.author())
-                .setIsbn(requestDto.isbn())
-                .setPrice(requestDto.price());
-        BookDto expected = new BookDto()
-                .setId(1L)
-                .setTitle(requestDto.title())
-                .setAuthor(requestDto.author())
-                .setIsbn(requestDto.isbn())
-                .setPrice(requestDto.price());
+        CreateBookRequestDto requestDto = getCreateBookRequestDtoTemplateById(0);
+        Book book = getBookTemplateById(0);
+        BookDto expected = getBookDtoTemplateById(0);
         when(bookMapper.toModel(requestDto)).thenReturn(book);
         when(bookRepository.save(book)).thenReturn(book);
         when(bookMapper.toDto(book)).thenReturn(expected);
@@ -91,20 +76,8 @@ public class BookServiceTest {
     @DisplayName("save: Add book with same ISBN")
     public void save_ExistingBook_Exception() {
         // Given
-        CreateBookRequestDto requestDto = new CreateBookRequestDto(
-                "Anansi Boys",
-                "Gaiman Neil",
-                "9780060515195",
-                BigDecimal.valueOf(500),
-                "",
-                "",
-                Set.of());
-        Book book = new Book()
-                .setId(1L)
-                .setTitle(requestDto.title())
-                .setAuthor(requestDto.author())
-                .setIsbn(requestDto.isbn())
-                .setPrice(requestDto.price());
+        CreateBookRequestDto requestDto = getCreateBookRequestDtoTemplateById(0);
+        Book book = getBookTemplateById(0);
         String expected = "Book with ISBN \"" + book.getIsbn() + "\" already exists";
         when(bookMapper.toModel(requestDto)).thenReturn(book);
         when(bookRepository.save(book)).thenThrow(new EntityExistsException(expected));
@@ -122,21 +95,9 @@ public class BookServiceTest {
     @DisplayName("findAllByCategoryId: Find one book by category Sci-Fi")
     public void findAllByCategoryId_CategorySciFi_ReturnsOneBook() {
         // Given
-        BookDtoWithoutCategoryIds bookDto = new BookDtoWithoutCategoryIds(
-                3L,
-                "Elantris",
-                "Brandon Sanderson",
-                "9780765350374",
-                BigDecimal.valueOf(420),
-                "",
-                "");
+        BookDtoWithoutCategoryIds bookDto = getBookDtoWithoutCategoryIdsTemplateById(2);
         List<BookDtoWithoutCategoryIds> expected = List.of(bookDto);
-        Book book = new Book()
-                .setId(bookDto.id())
-                .setTitle(bookDto.title())
-                .setAuthor(bookDto.author())
-                .setIsbn(bookDto.isbn())
-                .setPrice(bookDto.price());
+        Book book = getBookTemplateById(2);
         when(categoryRepository.existsById(1L)).thenReturn(true);
         when(bookRepository.findAllByCategoryId(1L)).thenReturn(List.of(book));
         when(bookMapper.toDtoWithoutCategories(book)).thenReturn(bookDto);
@@ -153,49 +114,13 @@ public class BookServiceTest {
     @DisplayName("findAllByCategoryId: Find three books by category Fantasy")
     public void findAllByCategoryId_CategoryFantasy_ReturnsThreeBooks() {
         // Given
-        BookDtoWithoutCategoryIds bookDto1 = new BookDtoWithoutCategoryIds(
-                1L,
-                "Anansi Boys",
-                "Gaiman Neil",
-                "9780060515195",
-                BigDecimal.valueOf(500),
-                "",
-                "");
-        BookDtoWithoutCategoryIds bookDto2 = new BookDtoWithoutCategoryIds(
-                2L,
-                "American Gods",
-                "Gaiman Neil",
-                "9780062896261",
-                BigDecimal.valueOf(450),
-                "",
-                "");
-        BookDtoWithoutCategoryIds bookDto3 = new BookDtoWithoutCategoryIds(
-                3L,
-                "Elantris",
-                "Brandon Sanderson",
-                "9780765350374",
-                BigDecimal.valueOf(420),
-                "",
-                "");
+        BookDtoWithoutCategoryIds bookDto1 = getBookDtoWithoutCategoryIdsTemplateById(0);
+        BookDtoWithoutCategoryIds bookDto2 = getBookDtoWithoutCategoryIdsTemplateById(1);
+        BookDtoWithoutCategoryIds bookDto3 = getBookDtoWithoutCategoryIdsTemplateById(2);
         List<BookDtoWithoutCategoryIds> expected = List.of(bookDto1, bookDto2, bookDto3);
-        Book book1 = new Book()
-                .setId(bookDto1.id())
-                .setTitle(bookDto1.title())
-                .setAuthor(bookDto1.author())
-                .setIsbn(bookDto1.isbn())
-                .setPrice(bookDto1.price());
-        Book book2 = new Book()
-                .setId(bookDto2.id())
-                .setTitle(bookDto2.title())
-                .setAuthor(bookDto2.author())
-                .setIsbn(bookDto2.isbn())
-                .setPrice(bookDto2.price());
-        Book book3 = new Book()
-                .setId(bookDto3.id())
-                .setTitle(bookDto3.title())
-                .setAuthor(bookDto3.author())
-                .setIsbn(bookDto3.isbn())
-                .setPrice(bookDto3.price());
+        Book book1 = getBookTemplateById(0);
+        Book book2 = getBookTemplateById(1);
+        Book book3 = getBookTemplateById(2);
         when(categoryRepository.existsById(2L)).thenReturn(true);
         when(bookRepository.findAllByCategoryId(2L)).thenReturn(List.of(book1, book2, book3));
         when(bookMapper.toDtoWithoutCategories(book1)).thenReturn(bookDto1);
@@ -246,26 +171,9 @@ public class BookServiceTest {
     @DisplayName("updateById: Update existing book")
     public void updateById_ExistingBook_ReturnsBookDto() {
         // Given
-        CreateBookRequestDto bookDto = new CreateBookRequestDto(
-                "Elantris",
-                "Brandon Sanderson",
-                "9780765350374",
-                BigDecimal.valueOf(450),
-                "",
-                "",
-                Set.of(1L, 2L));
-        Book book = new Book()
-                .setId(3L)
-                .setTitle(bookDto.title())
-                .setAuthor(bookDto.author())
-                .setIsbn(bookDto.isbn())
-                .setPrice(bookDto.price());
-        BookDto expected = new BookDto()
-                .setId(3L)
-                .setTitle(bookDto.title())
-                .setAuthor(bookDto.author())
-                .setIsbn(bookDto.isbn())
-                .setPrice(bookDto.price());
+        CreateBookRequestDto bookDto = getCreateBookRequestDtoTemplateById(2);
+        Book book = getBookTemplateById(2);
+        BookDto expected = getBookDtoTemplateById(2);
         when(bookRepository.existsById(3L)).thenReturn(true);
         when(bookMapper.toModel(bookDto)).thenReturn(book);
         when(bookRepository.save(book)).thenReturn(book);
@@ -282,14 +190,7 @@ public class BookServiceTest {
     @DisplayName("updateById: Update non-existing book")
     public void updateById_NonExistingBook_Exception() {
         // Given
-        CreateBookRequestDto bookDto = new CreateBookRequestDto(
-                "Elantris",
-                "Brandon Sanderson",
-                "9780765350374",
-                BigDecimal.valueOf(450),
-                "",
-                "",
-                Set.of(1L, 2L));
+        CreateBookRequestDto bookDto = getCreateBookRequestDtoTemplateById(2);
         String expected = "Can't get book with id: " + 4L;
         when(bookRepository.existsById(4L)).thenReturn(false);
 
@@ -306,12 +207,7 @@ public class BookServiceTest {
     @DisplayName("getById: Get book by valid ID")
     public void getById_ValidId_ReturnsBook() {
         // Given
-        Book expected = new Book()
-                .setId(1L)
-                .setTitle("Anansi Boys")
-                .setAuthor("Gaiman Neil")
-                .setIsbn("9780060515195")
-                .setPrice(BigDecimal.valueOf(500));
+        Book expected = getBookTemplateById(0);
         when(bookRepository.findById(1L)).thenReturn(Optional.of(expected));
 
         // When
@@ -341,18 +237,8 @@ public class BookServiceTest {
     @DisplayName("getDtoById: Get book by valid ID")
     public void getDtoById_ValidId_ReturnsBook() {
         // Given
-        Book book = new Book()
-                .setId(1L)
-                .setTitle("Anansi Boys")
-                .setAuthor("Gaiman Neil")
-                .setIsbn("9780060515195")
-                .setPrice(BigDecimal.valueOf(500));
-        BookDto expected = new BookDto()
-                .setId(book.getId())
-                .setTitle(book.getTitle())
-                .setAuthor(book.getAuthor())
-                .setIsbn(book.getIsbn())
-                .setPrice(book.getPrice());
+        Book book = getBookTemplateById(0);
+        BookDto expected = getBookDtoTemplateById(0);
         when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
         when(bookMapper.toDto(book)).thenReturn(expected);
 
@@ -387,18 +273,8 @@ public class BookServiceTest {
                 "Anansi", "", "", ""
         );
 
-        Book book = new Book()
-                .setId(1L)
-                .setTitle("Anansi Boys")
-                .setAuthor("Gaiman Neil")
-                .setIsbn("9780060515195")
-                .setPrice(BigDecimal.valueOf(500));
-        BookDto bookDto = new BookDto()
-                .setId(book.getId())
-                .setTitle(book.getTitle())
-                .setAuthor(book.getAuthor())
-                .setIsbn(book.getIsbn())
-                .setPrice(book.getPrice());
+        Book book = getBookTemplateById(0);
+        BookDto bookDto = getBookDtoTemplateById(0);
         List<BookDto> expected = List.of(bookDto);
         when(bookSpecificationBuilder.build(parameters))
                 .thenReturn(new Specification<Book>() {
@@ -452,42 +328,12 @@ public class BookServiceTest {
     @DisplayName("findAll: Empty pagination")
     public void findAll_EmptyPagination_ReturnsBooks() {
         // Given
-        Book book1 = new Book()
-                .setId(1L)
-                .setTitle("Anansi Boys")
-                .setAuthor("Gaiman Neil")
-                .setIsbn("9780060515195")
-                .setPrice(BigDecimal.valueOf(500));
-        Book book2 = new Book()
-                .setId(2L)
-                .setTitle("American Gods")
-                .setAuthor("Gaiman Neil")
-                .setIsbn("9780062896261")
-                .setPrice(BigDecimal.valueOf(450));
-        Book book3 = new Book()
-                .setId(3L)
-                .setTitle("Elantris")
-                .setAuthor("Brandon Sanderson")
-                .setIsbn("9780765350374")
-                .setPrice(BigDecimal.valueOf(420));
-        BookDto bookDto1 = new BookDto()
-                .setId(book1.getId())
-                .setTitle(book1.getTitle())
-                .setAuthor(book1.getAuthor())
-                .setIsbn(book1.getIsbn())
-                .setPrice(book1.getPrice());
-        BookDto bookDto2 = new BookDto()
-                .setId(book2.getId())
-                .setTitle(book2.getTitle())
-                .setAuthor(book2.getAuthor())
-                .setIsbn(book2.getIsbn())
-                .setPrice(book2.getPrice());
-        BookDto bookDto3 = new BookDto()
-                .setId(book3.getId())
-                .setTitle(book3.getTitle())
-                .setAuthor(book3.getAuthor())
-                .setIsbn(book3.getIsbn())
-                .setPrice(book3.getPrice());
+        Book book1 = getBookTemplateById(0);
+        Book book2 = getBookTemplateById(1);
+        Book book3 = getBookTemplateById(2);
+        BookDto bookDto1 = getBookDtoTemplateById(0);
+        BookDto bookDto2 = getBookDtoTemplateById(1);
+        BookDto bookDto3 = getBookDtoTemplateById(2);
         List<BookDto> expected = List.of(bookDto1, bookDto2, bookDto3);
         when(bookRepository.findAll(pageable)).thenReturn(
                 new PageImpl<>(List.of(book1, book2, book3))
@@ -506,8 +352,6 @@ public class BookServiceTest {
     @Test
     @DisplayName("deleteById: Delete by existing ID")
     public void deleteById_ExistingId_Success() {
-        // Given
-
         // When
         bookService.deleteById(1L);
 

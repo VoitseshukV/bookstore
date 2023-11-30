@@ -1,10 +1,10 @@
 package com.bookstore.core.repository;
 
+import static com.bookstore.core.util.TestDataFactory.getBookTemplateById;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.bookstore.core.model.Book;
 import com.bookstore.core.repository.book.BookRepository;
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -54,12 +54,7 @@ public class BookRepositoryTest {
     public void testFindAllByCategoryId_CategorySciFi_ReturnsOneBook() {
         // Given
         List<Book> expectedSciFi = new ArrayList<>();
-        expectedSciFi.add(new Book()
-                .setId(3L)
-                .setTitle("Elantris")
-                .setAuthor("Brandon Sanderson")
-                .setIsbn("9780765350374")
-                .setPrice(BigDecimal.valueOf(420)));
+        expectedSciFi.add(getBookTemplateById(2));
 
         // When
         List<Book> actualSciFi = bookRepository.findAllByCategoryId(1L);
@@ -74,24 +69,9 @@ public class BookRepositoryTest {
     public void testFindAllByCategoryId_CategoryFantasy_ReturnsThreeBooks() {
         // Given
         List<Book> expectedFantasy = new ArrayList<>();
-        expectedFantasy.add(new Book()
-                .setId(1L)
-                .setTitle("Anansi Boys")
-                .setAuthor("Gaiman Neil")
-                .setIsbn("9780060515195")
-                .setPrice(BigDecimal.valueOf(500)));
-        expectedFantasy.add(new Book()
-                .setId(2L)
-                .setTitle("American Gods")
-                .setAuthor("Gaiman Neil")
-                .setIsbn("9780062896261")
-                .setPrice(BigDecimal.valueOf(450)));
-        expectedFantasy.add(new Book()
-                .setId(3L)
-                .setTitle("Elantris")
-                .setAuthor("Brandon Sanderson")
-                .setIsbn("9780765350374")
-                .setPrice(BigDecimal.valueOf(420)));
+        expectedFantasy.add(getBookTemplateById(0));
+        expectedFantasy.add(getBookTemplateById(1));
+        expectedFantasy.add(getBookTemplateById(2));
 
         // When
         List<Book> actualFantasy = bookRepository.findAllByCategoryId(2L);
@@ -104,8 +84,6 @@ public class BookRepositoryTest {
     @Test
     @DisplayName("Find any book by a non-existent category")
     public void testFindAllByCategoryId_ExpectedCategory_ReturnsEmptyList() {
-        // Given
-
         // When
         List<Book> actual = bookRepository.findAllByCategoryId(0L);
 
@@ -116,8 +94,6 @@ public class BookRepositoryTest {
     @Test
     @DisplayName("Find any book by null category ID")
     public void testFindAllByCategoryId_NullCategoryId_ReturnsEmptyList() {
-        // Given
-
         // When
         List<Book> actual = bookRepository.findAllByCategoryId(null);
 
@@ -128,8 +104,6 @@ public class BookRepositoryTest {
     @Test
     @DisplayName("Find any book by negative category ID")
     public void testFindAllByCategoryId_NegativeId_ReturnsEmptyList() {
-        // Given
-
         // When
         List<Book> actual = bookRepository.findAllByCategoryId(-1L);
 

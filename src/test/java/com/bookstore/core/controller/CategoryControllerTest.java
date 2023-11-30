@@ -1,5 +1,8 @@
 package com.bookstore.core.controller;
 
+import static com.bookstore.core.util.TestDataFactory.getBookDtoTemplateById;
+import static com.bookstore.core.util.TestDataFactory.getCategoryDtoTemplateById;
+import static com.bookstore.core.util.TestDataFactory.getCreateCategoryRequestDtoTemplateById;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -16,7 +19,6 @@ import com.bookstore.core.dto.CreateCategoryRequestDto;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
-import java.math.BigDecimal;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,16 +49,8 @@ public class CategoryControllerTest {
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void getAllCategories_CategoriesAvailable_ReturnsExpectedBooks() throws Exception {
         // Given
-        CategoryDto categoryDto1 = new CategoryDto(
-                1L,
-                "Sci-Fi",
-                ""
-        );
-        CategoryDto categoryDto2 = new CategoryDto(
-                2L,
-                "Fantasy",
-                ""
-        );
+        CategoryDto categoryDto1 = getCategoryDtoTemplateById(0);
+        CategoryDto categoryDto2 = getCategoryDtoTemplateById(1);
         List<CategoryDto> expected = List.of(categoryDto1, categoryDto2);
 
         // When
@@ -83,11 +77,7 @@ public class CategoryControllerTest {
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void getCategoryById_ValidId_ReturnsFoundCategory() throws Exception {
         // Given
-        CategoryDto expected = new CategoryDto(
-                1L,
-                "Sci-Fi",
-                ""
-        );
+        CategoryDto expected = getCategoryDtoTemplateById(0);
 
         // When
         MvcResult mvcResult = mockMvc.perform(
@@ -139,12 +129,7 @@ public class CategoryControllerTest {
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void getAllBooksByCategory_CategoryAvailable_ReturnsExpectedBooks() throws Exception {
         // Given
-        BookDto bookDto = new BookDto()
-                .setId(3L)
-                .setTitle("Elantris")
-                .setAuthor("Brandon Sanderson")
-                .setIsbn("9780765350374")
-                .setPrice(BigDecimal.valueOf(420));
+        BookDto bookDto = getBookDtoTemplateById(2);
         List<BookDto> expected = List.of(bookDto);
 
         // When
@@ -192,15 +177,8 @@ public class CategoryControllerTest {
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void createCategory_ValidCategory_ReturnsCreatedCategoryDto() throws Exception {
         // Given
-        CreateCategoryRequestDto categoryDto = new CreateCategoryRequestDto(
-                "Sci-Fi",
-                ""
-        );
-        CategoryDto expected = new CategoryDto(
-                1L,
-                categoryDto.name(),
-                categoryDto.description()
-        );
+        CreateCategoryRequestDto categoryDto = getCreateCategoryRequestDtoTemplateById(0);
+        CategoryDto expected = getCategoryDtoTemplateById(0);
         String jsonRequest = objectMapper.writeValueAsString(categoryDto);
 
         // When
@@ -229,10 +207,7 @@ public class CategoryControllerTest {
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void createCategory_CategoryAlreadyExists_Exception() throws Exception {
         // Given
-        CreateCategoryRequestDto categoryDto = new CreateCategoryRequestDto(
-                "Sci-Fi",
-                ""
-        );
+        CreateCategoryRequestDto categoryDto = getCreateCategoryRequestDtoTemplateById(0);
         String jsonRequest = objectMapper.writeValueAsString(categoryDto);
 
         // When
@@ -257,15 +232,8 @@ public class CategoryControllerTest {
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateCategoryById_ValidCategory_ReturnsUpdatedCategoryDto() throws Exception {
         // Given
-        CreateCategoryRequestDto categoryDto = new CreateCategoryRequestDto(
-                "Sci-Fi",
-                "Science fiction"
-        );
-        CategoryDto expected = new CategoryDto(
-                1L,
-                categoryDto.name(),
-                categoryDto.description()
-        );
+        CreateCategoryRequestDto categoryDto = getCreateCategoryRequestDtoTemplateById(0);
+        CategoryDto expected = getCategoryDtoTemplateById(0);
         String jsonRequest = objectMapper.writeValueAsString(categoryDto);
 
         // When
@@ -294,10 +262,7 @@ public class CategoryControllerTest {
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateCategoryById_NonExistingCategory_Exception() throws Exception {
         // Given
-        CreateCategoryRequestDto categoryDto = new CreateCategoryRequestDto(
-                "Sci-Fi",
-                "Science fiction"
-        );
+        CreateCategoryRequestDto categoryDto = getCreateCategoryRequestDtoTemplateById(0);
         String jsonRequest = objectMapper.writeValueAsString(categoryDto);
         String expected = "Can't get category with id: 1";
 
@@ -322,8 +287,6 @@ public class CategoryControllerTest {
     @Sql(scripts = "classpath:database/books/clear-categories.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteCategoryById_ValidId_DeleteCategory() throws Exception {
-        // Given
-
         // When and then
         MvcResult mvcResult = mockMvc.perform(
                         delete("/api/categories/1"))

@@ -1,6 +1,11 @@
 package com.bookstore.core.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static com.bookstore.core.util.TestDataFactory.getBookDtoTemplateById;
+import static com.bookstore.core.util.TestDataFactory.getCreateBookRequestDtoTemplateById;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -13,9 +18,7 @@ import com.bookstore.core.dto.CreateBookRequestDto;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,24 +54,9 @@ public class BookControllerTest {
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void getAllBooks_BooksAvailable_ReturnsExpectedBooks() throws Exception {
         // Given
-        BookDto bookDto1 = new BookDto()
-                .setId(1L)
-                .setTitle("Anansi Boys")
-                .setAuthor("Gaiman Neil")
-                .setIsbn("9780060515195")
-                .setPrice(BigDecimal.valueOf(500));
-        BookDto bookDto2 = new BookDto()
-                .setId(2L)
-                .setTitle("American Gods")
-                .setAuthor("Gaiman Neil")
-                .setIsbn("9780062896261")
-                .setPrice(BigDecimal.valueOf(450));
-        BookDto bookDto3 = new BookDto()
-                .setId(3L)
-                .setTitle("Elantris")
-                .setAuthor("Brandon Sanderson")
-                .setIsbn("9780765350374")
-                .setPrice(BigDecimal.valueOf(420));
+        BookDto bookDto1 = getBookDtoTemplateById(0);
+        BookDto bookDto2 = getBookDtoTemplateById(1);
+        BookDto bookDto3 = getBookDtoTemplateById(2);
         List<BookDto> expected = List.of(bookDto1, bookDto2, bookDto3);
 
         // When
@@ -102,22 +90,8 @@ public class BookControllerTest {
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void createBook_ValidBook_ReturnsCreatedBookDto() throws Exception {
         // Given
-        CreateBookRequestDto bookDto = new CreateBookRequestDto(
-                "Elantris",
-                "Brandon Sanderson",
-                "9780765350374",
-                BigDecimal.valueOf(450),
-                "",
-                "",
-                Set.of());
-        BookDto expected = new BookDto()
-                .setTitle(bookDto.title())
-                .setAuthor(bookDto.author())
-                .setIsbn(bookDto.isbn())
-                .setPrice(bookDto.price())
-                .setDescription(bookDto.description())
-                .setCoverImage(bookDto.coverImage())
-                .setCategoryIds(Set.of());
+        CreateBookRequestDto bookDto = getCreateBookRequestDtoTemplateById(0);
+        BookDto expected = getBookDtoTemplateById(0);
         String jsonRequest = objectMapper.writeValueAsString(bookDto);
 
         // When
@@ -152,14 +126,7 @@ public class BookControllerTest {
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void createBook_BookAlreadyExists_Exception() throws Exception {
         // Given
-        CreateBookRequestDto bookDto = new CreateBookRequestDto(
-                "Elantris",
-                "Brandon Sanderson",
-                "9780765350374",
-                BigDecimal.valueOf(450),
-                "",
-                "",
-                Set.of());
+        CreateBookRequestDto bookDto = getCreateBookRequestDtoTemplateById(2);
         String jsonRequest = objectMapper.writeValueAsString(bookDto);
 
         // When
@@ -190,12 +157,7 @@ public class BookControllerTest {
     @WithMockUser(username = "user")
     public void getBookById_ValidId_ReturnsFoundBook() throws Exception {
         // Given
-        BookDto expected = new BookDto()
-                .setId(1L)
-                .setTitle("Anansi Boys")
-                .setAuthor("Gaiman Neil")
-                .setIsbn("9780060515195")
-                .setPrice(BigDecimal.valueOf(500));
+        BookDto expected = getBookDtoTemplateById(0);
 
         // When
         MvcResult mvcResult = mockMvc.perform(
@@ -251,23 +213,8 @@ public class BookControllerTest {
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateBookById_ValidBook_ReturnsUpdatedBookDto() throws Exception {
         // Given
-        CreateBookRequestDto bookDto = new CreateBookRequestDto(
-                "Elantris",
-                "Brandon Sanderson",
-                "9780765350374",
-                BigDecimal.valueOf(500),
-                "",
-                "",
-                Set.of(1L, 2L));
-        BookDto expected = new BookDto()
-                .setId(3L)
-                .setTitle(bookDto.title())
-                .setAuthor(bookDto.author())
-                .setIsbn(bookDto.isbn())
-                .setPrice(bookDto.price())
-                .setDescription(bookDto.description())
-                .setCoverImage(bookDto.coverImage())
-                .setCategoryIds(bookDto.categoryIds());
+        CreateBookRequestDto bookDto = getCreateBookRequestDtoTemplateById(2);
+        BookDto expected = getBookDtoTemplateById(2);
         String jsonRequest = objectMapper.writeValueAsString(bookDto);
 
         // When
@@ -302,14 +249,7 @@ public class BookControllerTest {
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateBookById_NonExistingBook_Exception() throws Exception {
         // Given
-        CreateBookRequestDto bookDto = new CreateBookRequestDto(
-                "Elantris",
-                "Brandon Sanderson",
-                "9780765350374",
-                BigDecimal.valueOf(500),
-                "",
-                "",
-                Set.of(1L, 2L));
+        CreateBookRequestDto bookDto = getCreateBookRequestDtoTemplateById(2);
         String jsonRequest = objectMapper.writeValueAsString(bookDto);
         String expected = "Can't get book with id: 3";
 
@@ -340,8 +280,6 @@ public class BookControllerTest {
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteBookById_ValidId_DeleteBook() throws Exception {
-        // Given
-
         // When and then
         MvcResult mvcResult = mockMvc.perform(
                         delete("/api/books/1"))
@@ -364,12 +302,7 @@ public class BookControllerTest {
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void searchBooks_SearchByName_ReturnsExpectedBooks() throws Exception {
         // Given
-        BookDto bookDto = new BookDto()
-                .setId(2L)
-                .setTitle("American Gods")
-                .setAuthor("Gaiman Neil")
-                .setIsbn("9780062896261")
-                .setPrice(BigDecimal.valueOf(450));
+        BookDto bookDto = getBookDtoTemplateById(1);
         List<BookDto> expected = List.of(bookDto);
         BookSearchParametersDto searchParametersDto = new BookSearchParametersDto(
                 "American",

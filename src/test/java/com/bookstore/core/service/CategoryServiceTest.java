@@ -1,5 +1,8 @@
 package com.bookstore.core.service;
 
+import static com.bookstore.core.util.TestDataFactory.getCategoryDtoTemplateById;
+import static com.bookstore.core.util.TestDataFactory.getCategoryTemplateById;
+import static com.bookstore.core.util.TestDataFactory.getCreateCategoryRequestDtoTemplateById;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
@@ -39,19 +42,9 @@ public class CategoryServiceTest {
     @DisplayName("save: Saving new category")
     public void save_ValidCreateCategoryRequestDto_ReturnValidCategoryDto() {
         // Given
-        CreateCategoryRequestDto requestDto = new CreateCategoryRequestDto(
-                "Sci-Fi",
-                ""
-        );
-        Category category = new Category()
-                .setId(1L)
-                .setName(requestDto.name())
-                .setDescription(requestDto.description());
-        CategoryDto expected = new CategoryDto(
-                category.getId(),
-                category.getName(),
-                category.getDescription()
-        );
+        CreateCategoryRequestDto requestDto = getCreateCategoryRequestDtoTemplateById(0);
+        Category category = getCategoryTemplateById(0);
+        CategoryDto expected = getCategoryDtoTemplateById(0);
         when(categoryMapper.toModel(requestDto)).thenReturn(category);
         when(categoryRepository.save(category)).thenReturn(category);
         when(categoryMapper.toDto(category)).thenReturn(expected);
@@ -67,14 +60,8 @@ public class CategoryServiceTest {
     @DisplayName("save: Add category with same name")
     public void save_ExistingCategory_Exception() {
         // Given
-        CreateCategoryRequestDto requestDto = new CreateCategoryRequestDto(
-                "Sci-Fi",
-                ""
-        );
-        Category category = new Category()
-                .setId(1L)
-                .setName(requestDto.name())
-                .setDescription(requestDto.description());
+        CreateCategoryRequestDto requestDto = getCreateCategoryRequestDtoTemplateById(0);
+        Category category = getCategoryTemplateById(0);
         String expected = "Category with name \"" + category.getName() + "\" already exists";
         when(categoryMapper.toModel(requestDto)).thenReturn(category);
         when(categoryRepository.save(category)).thenThrow(new EntityExistsException(expected));
@@ -92,22 +79,10 @@ public class CategoryServiceTest {
     @DisplayName("findAll: Empty pagination")
     public void findAll_EmptyPagination_ReturnsCategories() {
         // Given
-        Category category1 = new Category()
-                .setId(1L)
-                .setName("Sci-Fi");
-        Category category2 = new Category()
-                .setId(2L)
-                .setName("Fantasy");
-        CategoryDto categoryDto1 = new CategoryDto(
-                category1.getId(),
-                category1.getName(),
-                category1.getDescription()
-        );
-        CategoryDto categoryDto2 = new CategoryDto(
-                category2.getId(),
-                category2.getName(),
-                category2.getDescription()
-        );
+        Category category1 = getCategoryTemplateById(0);
+        Category category2 = getCategoryTemplateById(1);
+        CategoryDto categoryDto1 = getCategoryDtoTemplateById(0);
+        CategoryDto categoryDto2 = getCategoryDtoTemplateById(1);
         List<CategoryDto> expected = List.of(categoryDto1, categoryDto2);
         when(categoryRepository.findAll(pageable)).thenReturn(
                 new PageImpl<>(List.of(category1, category2))
@@ -125,8 +100,6 @@ public class CategoryServiceTest {
     @Test
     @DisplayName("deleteById: Delete category by existing ID")
     public void deleteById_ExistingId_Success() {
-        // Given
-
         // When
         categoryService.deleteById(1L);
 
@@ -138,18 +111,9 @@ public class CategoryServiceTest {
     @DisplayName("updateById: Update existing category")
     public void updateById_ExistingCategory_ReturnsCategoryDto() {
         // Given
-        CreateCategoryRequestDto requestDto = new CreateCategoryRequestDto(
-                "Sci-Fi",
-                ""
-        );
-        Category category = new Category()
-                .setId(1L)
-                .setName(requestDto.name());
-        CategoryDto expected = new CategoryDto(
-                category.getId(),
-                category.getName(),
-                category.getDescription()
-        );
+        CreateCategoryRequestDto requestDto = getCreateCategoryRequestDtoTemplateById(0);
+        Category category = getCategoryTemplateById(0);
+        CategoryDto expected = getCategoryDtoTemplateById(0);
         when(categoryRepository.existsById(1L)).thenReturn(true);
         when(categoryMapper.toModel(requestDto)).thenReturn(category);
         when(categoryRepository.save(category)).thenReturn(category);
@@ -166,10 +130,7 @@ public class CategoryServiceTest {
     @DisplayName("updateById: Update non-existing category")
     public void updateById_NonExistingCategory_Exception() {
         // Given
-        CreateCategoryRequestDto requestDto = new CreateCategoryRequestDto(
-                "Sci-Fi",
-                ""
-        );
+        CreateCategoryRequestDto requestDto = getCreateCategoryRequestDtoTemplateById(0);
         String expected = "Can't get category with id: " + 3L;
         when(categoryRepository.existsById(3L)).thenReturn(false);
 
@@ -186,14 +147,8 @@ public class CategoryServiceTest {
     @DisplayName("getById: Get category by valid ID")
     public void getById_ValidId_ReturnsCategory() {
         // Given
-        Category category = new Category()
-                .setId(1L)
-                .setName("Sci-Fi");
-        CategoryDto expected = new CategoryDto(
-                category.getId(),
-                category.getName(),
-                category.getDescription()
-        );
+        Category category = getCategoryTemplateById(0);
+        CategoryDto expected = getCategoryDtoTemplateById(0);
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
         when(categoryMapper.toDto(category)).thenReturn(expected);
 
