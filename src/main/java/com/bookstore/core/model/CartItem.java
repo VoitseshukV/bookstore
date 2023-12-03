@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -18,6 +19,7 @@ import org.hibernate.annotations.Where;
 @Table(name = "shopping_cart_items")
 @SQLDelete(sql = "UPDATE shopping_cart_items SET is_deleted = TRUE WHERE id=?")
 @Where(clause = "is_deleted = FALSE")
+@Accessors(chain = true)
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

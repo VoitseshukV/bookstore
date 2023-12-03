@@ -44,12 +44,12 @@ public class BookControllerTest {
     @WithMockUser(username = "user")
     @Sql(scripts = {
             "classpath:database/books/fill-books.sql",
-            "classpath:database/books/fill-categories.sql",
+            "classpath:database/category/fill-categories.sql",
             "classpath:database/books/fill-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void getAllBooks_BooksAvailable_ReturnsExpectedBooks() throws Exception {
@@ -80,12 +80,12 @@ public class BookControllerTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void createBook_ValidBook_ReturnsCreatedBookDto() throws Exception {
@@ -116,12 +116,12 @@ public class BookControllerTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @Sql(scripts = {
             "classpath:database/books/fill-books.sql",
-            "classpath:database/books/fill-categories.sql",
+            "classpath:database/category/fill-categories.sql",
             "classpath:database/books/fill-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void createBook_BookAlreadyExists_Exception() throws Exception {
@@ -144,12 +144,12 @@ public class BookControllerTest {
 
     @Sql(scripts = {
             "classpath:database/books/fill-books.sql",
-            "classpath:database/books/fill-categories.sql",
+            "classpath:database/category/fill-categories.sql",
             "classpath:database/books/fill-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Test
@@ -177,7 +177,7 @@ public class BookControllerTest {
 
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Test
@@ -203,12 +203,12 @@ public class BookControllerTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @Sql(scripts = {
             "classpath:database/books/fill-books.sql",
-            "classpath:database/books/fill-categories.sql",
+            "classpath:database/category/fill-categories.sql",
             "classpath:database/books/fill-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateBookById_ValidBook_ReturnsUpdatedBookDto() throws Exception {
@@ -239,12 +239,12 @@ public class BookControllerTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateBookById_NonExistingBook_Exception() throws Exception {
@@ -271,12 +271,12 @@ public class BookControllerTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @Sql(scripts = {
             "classpath:database/books/fill-books.sql",
-            "classpath:database/books/fill-categories.sql",
+            "classpath:database/category/fill-categories.sql",
             "classpath:database/books/fill-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteBookById_ValidId_DeleteBook() throws Exception {
@@ -292,12 +292,12 @@ public class BookControllerTest {
     @WithMockUser(username = "user")
     @Sql(scripts = {
             "classpath:database/books/fill-books.sql",
-            "classpath:database/books/fill-categories.sql",
+            "classpath:database/category/fill-categories.sql",
             "classpath:database/books/fill-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void searchBooks_SearchByName_ReturnsExpectedBooks() throws Exception {

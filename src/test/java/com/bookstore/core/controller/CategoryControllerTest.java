@@ -43,9 +43,9 @@ public class CategoryControllerTest {
     @Test
     @DisplayName("getAllCategories: Return list available categories")
     @WithMockUser(username = "user")
-    @Sql(scripts = "classpath:database/books/fill-categories.sql",
+    @Sql(scripts = "classpath:database/category/fill-categories.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "classpath:database/books/clear-categories.sql",
+    @Sql(scripts = "classpath:database/category/clear-categories.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void getAllCategories_CategoriesAvailable_ReturnsExpectedBooks() throws Exception {
         // Given
@@ -71,9 +71,9 @@ public class CategoryControllerTest {
     @Test
     @DisplayName("getCategoryById: Return category by valid ID")
     @WithMockUser(username = "user")
-    @Sql(scripts = "classpath:database/books/fill-categories.sql",
+    @Sql(scripts = "classpath:database/category/fill-categories.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "classpath:database/books/clear-categories.sql",
+    @Sql(scripts = "classpath:database/category/clear-categories.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void getCategoryById_ValidId_ReturnsFoundCategory() throws Exception {
         // Given
@@ -97,7 +97,7 @@ public class CategoryControllerTest {
     @Test
     @DisplayName("getCategoryById: Get non-existing category")
     @WithMockUser(username = "user")
-    @Sql(scripts = "classpath:database/books/clear-categories.sql",
+    @Sql(scripts = "classpath:database/category/clear-categories.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void getCategoryById_NonExistingCategory_Exception() throws Exception {
         // Given
@@ -119,12 +119,12 @@ public class CategoryControllerTest {
     @WithMockUser(username = "user")
     @Sql(scripts = {
             "classpath:database/books/fill-books.sql",
-            "classpath:database/books/fill-categories.sql",
+            "classpath:database/category/fill-categories.sql",
             "classpath:database/books/fill-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void getAllBooksByCategory_CategoryAvailable_ReturnsExpectedBooks() throws Exception {
@@ -151,7 +151,7 @@ public class CategoryControllerTest {
     @Test
     @DisplayName("getAllBooksByCategory: Return books by non-existing category")
     @WithMockUser(username = "user")
-    @Sql(scripts = "classpath:database/books/clear-categories.sql",
+    @Sql(scripts = "classpath:database/category/clear-categories.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void getAllBooksByCategory_NonExistingCategory_Exception() throws Exception {
         // Given
@@ -171,9 +171,9 @@ public class CategoryControllerTest {
     @Test
     @DisplayName("createCategory: Add new valid category")
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    @Sql(scripts = "classpath:database/books/clear-categories.sql",
+    @Sql(scripts = "classpath:database/category/clear-categories.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "classpath:database/books/clear-categories.sql",
+    @Sql(scripts = "classpath:database/category/clear-categories.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void createCategory_ValidCategory_ReturnsCreatedCategoryDto() throws Exception {
         // Given
@@ -201,9 +201,9 @@ public class CategoryControllerTest {
     @Test
     @DisplayName("createCategory: The category already exists")
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    @Sql(scripts = "classpath:database/books/fill-categories.sql",
+    @Sql(scripts = "classpath:database/category/fill-categories.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "classpath:database/books/clear-categories.sql",
+    @Sql(scripts = "classpath:database/category/clear-categories.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void createCategory_CategoryAlreadyExists_Exception() throws Exception {
         // Given
@@ -226,9 +226,9 @@ public class CategoryControllerTest {
     @Test
     @DisplayName("updateCategoryById: Update existing category")
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    @Sql(scripts = "classpath:database/books/fill-categories.sql",
+    @Sql(scripts = "classpath:database/category/fill-categories.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "classpath:database/books/clear-categories.sql",
+    @Sql(scripts = "classpath:database/category/clear-categories.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateCategoryById_ValidCategory_ReturnsUpdatedCategoryDto() throws Exception {
         // Given
@@ -256,9 +256,9 @@ public class CategoryControllerTest {
     @Test
     @DisplayName("updateCategoryById: Update non-existing category")
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    @Sql(scripts = "classpath:database/books/clear-categories.sql",
+    @Sql(scripts = "classpath:database/category/clear-categories.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "classpath:database/books/clear-categories.sql",
+    @Sql(scripts = "classpath:database/category/clear-categories.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateCategoryById_NonExistingCategory_Exception() throws Exception {
         // Given
@@ -282,9 +282,9 @@ public class CategoryControllerTest {
     @Test
     @DisplayName("deleteCategoryById: Delete category by valid ID")
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    @Sql(scripts = "classpath:database/books/fill-categories.sql",
+    @Sql(scripts = "classpath:database/category/fill-categories.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "classpath:database/books/clear-categories.sql",
+    @Sql(scripts = "classpath:database/category/clear-categories.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteCategoryById_ValidId_DeleteCategory() throws Exception {
         // When and then

@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -26,6 +27,7 @@ import org.hibernate.annotations.Where;
 @Table(name = "orders")
 @SQLDelete(sql = "UPDATE orders SET is_deleted = TRUE WHERE id=?")
 @Where(clause = "is_deleted = FALSE")
+@Accessors(chain = true)
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

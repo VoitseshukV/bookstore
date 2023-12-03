@@ -1,6 +1,7 @@
 package com.bookstore.core.controller;
 
 import com.bookstore.core.dto.AddCartItemRequestDto;
+import com.bookstore.core.dto.CartItemDto;
 import com.bookstore.core.dto.ShoppingCartDto;
 import com.bookstore.core.dto.UpdateCartItemRequestDto;
 import com.bookstore.core.service.CartItemService;
@@ -40,24 +41,24 @@ public class ShoppingCartController {
     @Operation(summary = "Add book to shopping cart",
             description = "Add book to shopping cart")
     @PostMapping
-    public void addCartItem(
+    public CartItemDto addCartItem(
             Authentication authentication,
             @RequestBody @Valid AddCartItemRequestDto requestDto
     ) {
         String email = authentication.getName();
-        cartItemService.addItem(email, requestDto);
+        return cartItemService.addItem(email, requestDto);
     }
 
     @Operation(summary = "Update cart item",
             description = "Update books quantity in shopping cart")
     @PutMapping("/items/{id}")
-    public void updateCartItemById(
+    public CartItemDto updateCartItemById(
             Authentication authentication,
             @PathVariable Long id,
             @RequestBody @Valid UpdateCartItemRequestDto requestDto
     ) {
         String email = authentication.getName();
-        cartItemService.updateItem(email, id, requestDto);
+        return cartItemService.updateItem(email, id, requestDto);
     }
 
     @Operation(summary = "Delete cart item",
@@ -66,6 +67,6 @@ public class ShoppingCartController {
     @DeleteMapping("/items/{id}")
     public void deleteCartItemById(Authentication authentication, @PathVariable Long id) {
         String email = authentication.getName();
-        cartItemService.deleteItem(email, id);
+        cartItemService.checkAndDeleteById(email, id);
     }
 }

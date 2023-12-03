@@ -12,11 +12,13 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "shopping_carts")
+@Accessors(chain = true)
 public class ShoppingCart {
     @Id
     private Long id;

@@ -1,14 +1,13 @@
 package com.bookstore.core.repository;
 
-import static com.bookstore.core.util.TestDataFactory.getBookTemplateById;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import com.bookstore.core.model.Book;
-import com.bookstore.core.repository.book.BookRepository;
+import com.bookstore.core.model.CartItem;
+import com.bookstore.core.repository.cart.CartItemRepository;
+import com.bookstore.core.util.TestDataFactory;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -23,9 +22,9 @@ import org.testcontainers.shaded.org.apache.commons.lang3.builder.EqualsBuilder;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class BookRepositoryTest {
+public class CartItemRepositoryTest {
     @Autowired
-    private BookRepository bookRepository;
+    private CartItemRepository cartItemRepository;
 
     @BeforeAll
     static void beforeAll(@Autowired DataSource dataSource) {
@@ -43,71 +42,47 @@ public class BookRepositoryTest {
                     connection,
                     new ClassPathResource("database/books/fill-book-categories.sql")
             );
+            ScriptUtils.executeSqlScript(
+                    connection,
+                    new ClassPathResource("database/user/fill-users.sql")
+            );
+            ScriptUtils.executeSqlScript(
+                    connection,
+                    new ClassPathResource("database/cart/fill-shopping-carts.sql")
+            );
+            ScriptUtils.executeSqlScript(
+                    connection,
+                    new ClassPathResource("database/cart/fill-shopping-cart-items.sql")
+            );
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Test
-    @DisplayName("Find one book by category Sci-Fi")
-    public void testFindAllByCategoryId_CategorySciFi_ReturnsOneBook() {
+    @DisplayName("findCardItemByBookId: Find existing cart item")
+    public void findCardItemByBookId_ExistingCartItem_ReturnsCartItem() {
         // Given
-        List<Book> expectedSciFi = new ArrayList<>();
-        expectedSciFi.add(getBookTemplateById(2));
+        CartItem expected = TestDataFactory.getCartItemTemplate(0);
 
         // When
-        List<Book> actualSciFi = bookRepository.findAllByCategoryId(1L);
+        CartItem actual = cartItemRepository.findCardItemByBookId(2L, 1L);
 
         // Then
-        assertEquals(1, actualSciFi.size());
-        EqualsBuilder.reflectionEquals(expectedSciFi, actualSciFi, "categories");
+        EqualsBuilder.reflectionEquals(expected, actual, "shoppingCart");
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getQuantity(), actual.getQuantity());
+        assertEquals(expected.getBook(), actual.getBook());
     }
 
     @Test
-    @DisplayName("Find three books by category Fantasy")
-    public void testFindAllByCategoryId_CategoryFantasy_ReturnsThreeBooks() {
-        // Given
-        List<Book> expectedFantasy = new ArrayList<>();
-        expectedFantasy.add(getBookTemplateById(0));
-        expectedFantasy.add(getBookTemplateById(1));
-        expectedFantasy.add(getBookTemplateById(2));
-
+    @DisplayName("findCardItemByBookId: Find non-existing cart item")
+    public void findCardItemByBookId_NonExistingCartItem_ReturnsNull() {
         // When
-        List<Book> actualFantasy = bookRepository.findAllByCategoryId(2L);
+        CartItem actual = cartItemRepository.findCardItemByBookId(2L, 3L);
 
         // Then
-        assertEquals(3, actualFantasy.size());
-        EqualsBuilder.reflectionEquals(expectedFantasy, actualFantasy, "categories");
-    }
-
-    @Test
-    @DisplayName("Find any book by a non-existent category")
-    public void testFindAllByCategoryId_ExpectedCategory_ReturnsEmptyList() {
-        // When
-        List<Book> actual = bookRepository.findAllByCategoryId(0L);
-
-        // Then
-        assertEquals(0, actual.size());
-    }
-
-    @Test
-    @DisplayName("Find any book by null category ID")
-    public void testFindAllByCategoryId_NullCategoryId_ReturnsEmptyList() {
-        // When
-        List<Book> actual = bookRepository.findAllByCategoryId(null);
-
-        // Then
-        assertEquals(0, actual.size());
-    }
-
-    @Test
-    @DisplayName("Find any book by negative category ID")
-    public void testFindAllByCategoryId_NegativeId_ReturnsEmptyList() {
-        // When
-        List<Book> actual = bookRepository.findAllByCategoryId(-1L);
-
-        // Then
-        assertEquals(0, actual.size());
+        assertNull(actual);
     }
 
     @AfterAll
@@ -125,6 +100,18 @@ public class BookRepositoryTest {
             ScriptUtils.executeSqlScript(
                     connection,
                     new ClassPathResource("database/books/clear-book-categories.sql")
+            );
+            ScriptUtils.executeSqlScript(
+                    connection,
+                    new ClassPathResource("database/user/clear-users.sql")
+            );
+            ScriptUtils.executeSqlScript(
+                    connection,
+                    new ClassPathResource("database/cart/clear-shopping-carts.sql")
+            );
+            ScriptUtils.executeSqlScript(
+                    connection,
+                    new ClassPathResource("database/cart/clear-shopping-cart-items.sql")
             );
         } catch (SQLException e) {
             throw new RuntimeException(e);
