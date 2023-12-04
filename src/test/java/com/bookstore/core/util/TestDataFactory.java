@@ -452,7 +452,7 @@ public class TestDataFactory {
                 .setId(4L)
                 .setOrder(order2)
                 .setBook(getBookTemplateById(1))
-                .setQuantity(2)
+                .setQuantity(1)
                 .setPrice(BigDecimal.valueOf(450)));
         orderItems.add(new OrderItem()
                 .setId(5L)

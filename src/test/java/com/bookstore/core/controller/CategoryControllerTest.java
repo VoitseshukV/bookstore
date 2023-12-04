@@ -42,7 +42,7 @@ public class CategoryControllerTest {
 
     @Test
     @DisplayName("getAllCategories: Return list available categories")
-    @WithMockUser(username = "user")
+    @WithMockUser(username = "user@bookstore.ua")
     @Sql(scripts = "classpath:database/category/fill-categories.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "classpath:database/category/clear-categories.sql",
@@ -62,7 +62,8 @@ public class CategoryControllerTest {
         // Then
         List<CategoryDto> actual = objectMapper.readValue(
                 mvcResult.getResponse().getContentAsString(),
-                new TypeReference<List<CategoryDto>>(){}
+                new TypeReference<>() {
+                }
         );
         assertNotNull(actual);
         assertEquals(expected, actual);
@@ -70,7 +71,7 @@ public class CategoryControllerTest {
 
     @Test
     @DisplayName("getCategoryById: Return category by valid ID")
-    @WithMockUser(username = "user")
+    @WithMockUser(username = "user@bookstore.ua")
     @Sql(scripts = "classpath:database/category/fill-categories.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "classpath:database/category/clear-categories.sql",
@@ -96,7 +97,7 @@ public class CategoryControllerTest {
 
     @Test
     @DisplayName("getCategoryById: Get non-existing category")
-    @WithMockUser(username = "user")
+    @WithMockUser(username = "user@bookstore.ua")
     @Sql(scripts = "classpath:database/category/clear-categories.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void getCategoryById_NonExistingCategory_Exception() throws Exception {
@@ -116,7 +117,7 @@ public class CategoryControllerTest {
 
     @Test
     @DisplayName("getAllBooksByCategory: Return books by category")
-    @WithMockUser(username = "user")
+    @WithMockUser(username = "user@bookstore.ua")
     @Sql(scripts = {
             "classpath:database/books/fill-books.sql",
             "classpath:database/category/fill-categories.sql",
@@ -141,7 +142,8 @@ public class CategoryControllerTest {
         // Then
         List<BookDto> actual = objectMapper.readValue(
                 mvcResult.getResponse().getContentAsString(),
-                new TypeReference<List<BookDto>>(){}
+                new TypeReference<>() {
+                }
         );
         assertNotNull(actual);
         EqualsBuilder.reflectionEquals(expected, actual,
@@ -150,7 +152,7 @@ public class CategoryControllerTest {
 
     @Test
     @DisplayName("getAllBooksByCategory: Return books by non-existing category")
-    @WithMockUser(username = "user")
+    @WithMockUser(username = "user@bookstore.ua")
     @Sql(scripts = "classpath:database/category/clear-categories.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void getAllBooksByCategory_NonExistingCategory_Exception() throws Exception {
@@ -170,7 +172,7 @@ public class CategoryControllerTest {
 
     @Test
     @DisplayName("createCategory: Add new valid category")
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @WithMockUser(username = "admin@bookstore.ua", roles = {"ADMIN"})
     @Sql(scripts = "classpath:database/category/clear-categories.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "classpath:database/category/clear-categories.sql",
@@ -200,7 +202,7 @@ public class CategoryControllerTest {
 
     @Test
     @DisplayName("createCategory: The category already exists")
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @WithMockUser(username = "admin@bookstore.ua", roles = {"ADMIN"})
     @Sql(scripts = "classpath:database/category/fill-categories.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "classpath:database/category/clear-categories.sql",
@@ -225,7 +227,7 @@ public class CategoryControllerTest {
 
     @Test
     @DisplayName("updateCategoryById: Update existing category")
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @WithMockUser(username = "admin@bookstore.ua", roles = {"ADMIN"})
     @Sql(scripts = "classpath:database/category/fill-categories.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "classpath:database/category/clear-categories.sql",
@@ -255,7 +257,7 @@ public class CategoryControllerTest {
 
     @Test
     @DisplayName("updateCategoryById: Update non-existing category")
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @WithMockUser(username = "admin@bookstore.ua", roles = {"ADMIN"})
     @Sql(scripts = "classpath:database/category/clear-categories.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "classpath:database/category/clear-categories.sql",
@@ -281,16 +283,14 @@ public class CategoryControllerTest {
 
     @Test
     @DisplayName("deleteCategoryById: Delete category by valid ID")
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @WithMockUser(username = "admin@bookstore.ua", roles = {"ADMIN"})
     @Sql(scripts = "classpath:database/category/fill-categories.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "classpath:database/category/clear-categories.sql",
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteCategoryById_ValidId_DeleteCategory() throws Exception {
         // When and then
-        MvcResult mvcResult = mockMvc.perform(
-                        delete("/api/categories/1"))
-                .andExpect(status().isNoContent())
-                .andReturn();
+        mockMvc.perform(delete("/api/categories/1"))
+                .andExpect(status().isNoContent());
     }
 }
