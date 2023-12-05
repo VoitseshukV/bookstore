@@ -1,8 +1,10 @@
 package com.bookstore.core.service.impl;
 
 import com.bookstore.core.dto.AddCartItemRequestDto;
+import com.bookstore.core.dto.CartItemDto;
 import com.bookstore.core.dto.UpdateCartItemRequestDto;
 import com.bookstore.core.exception.EntityNotFoundException;
+import com.bookstore.core.mapper.CartItemMapper;
 import com.bookstore.core.model.Book;
 import com.bookstore.core.model.CartItem;
 import com.bookstore.core.model.ShoppingCart;
@@ -22,10 +24,11 @@ public class CartItemServiceImpl implements CartItemService {
     private final CartItemRepository cartItemRepository;
     private final ShoppingCartService shoppingCartService;
     private final BookService bookService;
+    private final CartItemMapper cartItemMapper;
 
     @Override
     @Transactional
-    public void addItem(String email, AddCartItemRequestDto requestDto) {
+    public CartItemDto addItem(String email, AddCartItemRequestDto requestDto) {
         ShoppingCart shoppingCart = shoppingCartService.shoppingCartByEmail(email);
         CartItem cartItem = cartItemRepository.findCardItemByBookId(
                 shoppingCart.getId(), requestDto.bookId());
@@ -38,19 +41,21 @@ public class CartItemServiceImpl implements CartItemService {
             cartItem.setBook(book);
             cartItem.setQuantity(requestDto.quantity());
         }
-        cartItemRepository.save(cartItem);
+        cartItem = cartItemRepository.save(cartItem);
+        return cartItemMapper.toDto(cartItem);
     }
 
     @Override
     @Transactional
-    public void updateItem(String email, Long id, UpdateCartItemRequestDto requestDto) {
+    public CartItemDto updateItem(String email, Long id, UpdateCartItemRequestDto requestDto) {
         CartItem cartItem = getByIdAndEmail(id, email);
         cartItem.setQuantity(requestDto.quantity());
-        cartItemRepository.save(cartItem);
+        cartItem = cartItemRepository.save(cartItem);
+        return cartItemMapper.toDto(cartItem);
     }
 
     @Override
-    public void deleteItem(String email, Long id) {
+    public void checkAndDeleteById(String email, Long id) {
         CartItem cartItem = getByIdAndEmail(id, email);
         cartItemRepository.delete(cartItem);
     }

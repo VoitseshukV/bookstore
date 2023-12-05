@@ -50,7 +50,7 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderException("Shopping cart is empty");
         }
         Order order = fillOrderByShoppingCart(shoppingCart);
-        orderRepository.save(order);
+        order = orderRepository.save(order);
         shoppingCart.setCartItems(new HashSet<>());
         return orderMapper.toDto(order);
     }
@@ -73,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order findFirstByUserAndId(User user, Long orderId) {
+    public Order findByIdAndCheckByUser(User user, Long orderId) {
         return orderRepository.findByUserAndId(user, orderId).orElseThrow(
                 () -> new EntityNotFoundException("Can't find order with ID: " + orderId));
     }
@@ -95,8 +95,7 @@ public class OrderServiceImpl implements OrderService {
         return order;
     }
 
-    @Override
-    public OrderItem addByCartItem(CartItem cartItem, Order order) {
+    private OrderItem addByCartItem(CartItem cartItem, Order order) {
         OrderItem orderItem = new OrderItem();
         orderItem.setOrder(order);
         orderItem.setBook(cartItem.getBook());

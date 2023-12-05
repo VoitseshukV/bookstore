@@ -13,7 +13,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.bookstore.core.dto.BookDto;
-import com.bookstore.core.dto.BookSearchParametersDto;
 import com.bookstore.core.dto.CreateBookRequestDto;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,15 +40,15 @@ public class BookControllerTest {
 
     @Test
     @DisplayName("getAllBooks: Return available books")
-    @WithMockUser(username = "user")
+    @WithMockUser(username = "user@bookstore.ua")
     @Sql(scripts = {
             "classpath:database/books/fill-books.sql",
-            "classpath:database/books/fill-categories.sql",
+            "classpath:database/category/fill-categories.sql",
             "classpath:database/books/fill-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void getAllBooks_BooksAvailable_ReturnsExpectedBooks() throws Exception {
@@ -68,7 +67,8 @@ public class BookControllerTest {
         // Then
         List<BookDto> actual = objectMapper.readValue(
                 mvcResult.getResponse().getContentAsString(),
-                new TypeReference<List<BookDto>>(){}
+                new TypeReference<>() {
+                }
         );
         assertNotNull(actual);
         EqualsBuilder.reflectionEquals(expected, actual,
@@ -77,15 +77,15 @@ public class BookControllerTest {
 
     @Test
     @DisplayName("createBook: Add new valid book")
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @WithMockUser(username = "admin@bookstore.ua", roles = {"ADMIN"})
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void createBook_ValidBook_ReturnsCreatedBookDto() throws Exception {
@@ -113,15 +113,15 @@ public class BookControllerTest {
 
     @Test
     @DisplayName("createBook: The book already exists")
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @WithMockUser(username = "admin@bookstore.ua", roles = {"ADMIN"})
     @Sql(scripts = {
             "classpath:database/books/fill-books.sql",
-            "classpath:database/books/fill-categories.sql",
+            "classpath:database/category/fill-categories.sql",
             "classpath:database/books/fill-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void createBook_BookAlreadyExists_Exception() throws Exception {
@@ -144,17 +144,17 @@ public class BookControllerTest {
 
     @Sql(scripts = {
             "classpath:database/books/fill-books.sql",
-            "classpath:database/books/fill-categories.sql",
+            "classpath:database/category/fill-categories.sql",
             "classpath:database/books/fill-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Test
     @DisplayName("getBookById: Return book by valid ID")
-    @WithMockUser(username = "user")
+    @WithMockUser(username = "user@bookstore.ua")
     public void getBookById_ValidId_ReturnsFoundBook() throws Exception {
         // Given
         BookDto expected = getBookDtoTemplateById(0);
@@ -177,12 +177,12 @@ public class BookControllerTest {
 
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Test
     @DisplayName("getBookById: Get non-existing book")
-    @WithMockUser(username = "user")
+    @WithMockUser(username = "user@bookstore.ua")
     public void getBookById_NonExistingBook_Exception() throws Exception {
         // Given
         String expected = "Can't get book with id: 1";
@@ -200,15 +200,15 @@ public class BookControllerTest {
 
     @Test
     @DisplayName("updateBookById: Update existing book")
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @WithMockUser(username = "admin@bookstore.ua", roles = {"ADMIN"})
     @Sql(scripts = {
             "classpath:database/books/fill-books.sql",
-            "classpath:database/books/fill-categories.sql",
+            "classpath:database/category/fill-categories.sql",
             "classpath:database/books/fill-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateBookById_ValidBook_ReturnsUpdatedBookDto() throws Exception {
@@ -236,15 +236,15 @@ public class BookControllerTest {
 
     @Test
     @DisplayName("updateBookById: Update non-existing book")
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @WithMockUser(username = "admin@bookstore.ua", roles = {"ADMIN"})
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void updateBookById_NonExistingBook_Exception() throws Exception {
@@ -268,48 +268,40 @@ public class BookControllerTest {
 
     @Test
     @DisplayName("deleteBookById: Delete book by valid ID")
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @WithMockUser(username = "admin@bookstore.ua", roles = {"ADMIN"})
     @Sql(scripts = {
             "classpath:database/books/fill-books.sql",
-            "classpath:database/books/fill-categories.sql",
+            "classpath:database/category/fill-categories.sql",
             "classpath:database/books/fill-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void deleteBookById_ValidId_DeleteBook() throws Exception {
         // When and then
-        MvcResult mvcResult = mockMvc.perform(
-                        delete("/api/books/1"))
-                .andExpect(status().isNoContent())
-                .andReturn();
+        mockMvc.perform(delete("/api/books/1"))
+                .andExpect(status().isNoContent());
     }
 
     @Test
     @DisplayName("searchBooks: Search books by name")
-    @WithMockUser(username = "user")
+    @WithMockUser(username = "user@bookstore.ua")
     @Sql(scripts = {
             "classpath:database/books/fill-books.sql",
-            "classpath:database/books/fill-categories.sql",
+            "classpath:database/category/fill-categories.sql",
             "classpath:database/books/fill-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
             "classpath:database/books/clear-books.sql",
-            "classpath:database/books/clear-categories.sql",
+            "classpath:database/category/clear-categories.sql",
             "classpath:database/books/clear-book-categories.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void searchBooks_SearchByName_ReturnsExpectedBooks() throws Exception {
         // Given
         BookDto bookDto = getBookDtoTemplateById(1);
         List<BookDto> expected = List.of(bookDto);
-        BookSearchParametersDto searchParametersDto = new BookSearchParametersDto(
-                "American",
-                "",
-                "",
-                ""
-        );
 
         // When
         MvcResult mvcResult = mockMvc.perform(
@@ -320,7 +312,8 @@ public class BookControllerTest {
         // Then
         List<BookDto> actual = objectMapper.readValue(
                 mvcResult.getResponse().getContentAsString(),
-                new TypeReference<List<BookDto>>(){}
+                new TypeReference<>() {
+                }
         );
         assertNotNull(actual);
         EqualsBuilder.reflectionEquals(expected, actual,

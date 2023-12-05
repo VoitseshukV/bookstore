@@ -11,6 +11,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import lombok.Data;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -19,6 +20,7 @@ import org.hibernate.annotations.Where;
 @Table(name = "order_items")
 @SQLDelete(sql = "UPDATE order_items SET is_deleted = TRUE WHERE id=?")
 @Where(clause = "is_deleted = FALSE")
+@Accessors(chain = true)
 public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -9,6 +9,7 @@ import com.bookstore.core.repository.order.OrderItemRepository;
 import com.bookstore.core.service.OrderItemService;
 import com.bookstore.core.service.OrderService;
 import com.bookstore.core.service.UserService;
+import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,15 +25,16 @@ public class OrderItemServiceImpl implements OrderItemService {
     @Override
     public List<OrderItemDto> getOrderItems(String email, Long orderId) {
         User user = userService.findByEmail(email);
-        return orderService.findFirstByUserAndId(user, orderId).getOrderItems().stream()
+        return orderService.findByIdAndCheckByUser(user, orderId).getOrderItems().stream()
                 .map(orderItemMapper::toDto)
+                .sorted(Comparator.comparing(OrderItemDto::getId))
                 .toList();
     }
 
     @Override
     public OrderItemDto getOrderItemById(String email, Long orderId, Long itemId) {
         User user = userService.findByEmail(email);
-        Order order = orderService.findFirstByUserAndId(user, orderId);
+        Order order = orderService.findByIdAndCheckByUser(user, orderId);
         return orderItemMapper.toDto(orderItemRepository.findFirstByOrderAndId(order, itemId)
                 .orElseThrow(() -> new EntityNotFoundException("Can't find order item with ID: "
                         + itemId)));
