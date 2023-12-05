@@ -127,7 +127,7 @@ To set up and run the Online Book Store API on your local machine:
 - Navigate to the project directory:
         
         cd <local_directory>
-- Add custom <code>.env</code> file with the necessary parameters:
+- Add custom <code>.env</code> file in root folder with the necessary parameters:
 
         MYSQL_DATABASE=<db_name>
         MYSQL_USER=<db_user_name>
@@ -142,3 +142,6 @@ To set up and run the Online Book Store API on your local machine:
 - Builds, creates, starts, and attaches to containers for a service:
 
         docker-compose up
+- You can use this <a href="https://documenter.getpostman.com/view/20590364/2s9YeLZqFv">
+        <img src="https://voyager.postman.com/logo/postman-logo-icon-orange.svg" alt="Postman" width="16" height="16">
+        Postman Library</a> for testing.
