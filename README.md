@@ -1,11 +1,11 @@
-<p style="text-align: center">
+<p align="center">
     <img 
         alt="Online Book Store" 
         title="Online Book Store" 
         src="https://i.imgur.com/u9TwkfW.png">
 </p>
-<h1 style="text-align: center;"> Online Book Store </h1> <br>
-<p style="text-align: center;">
+<h1 align="center"> Online Book Store </h1> <br>
+<p align="center">
     Free API prototype
 </p>
 
