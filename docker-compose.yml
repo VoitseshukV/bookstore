@@ -32,12 +32,14 @@ services:
         "jwt.expiration": 3600000,
         "jwt.secret": "$JWT_SECRET"
         }'
-      JAVA_OPTS:
-        "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:$DEBUG_PORT"
+      _JAVA_OPTIONS: >
+        -Xdebug
+        -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
     ports:
       - $SPRING_LOCAL_PORT:$SPRING_DOCKER_PORT
-      - $DEBUG_PORT
+      - $DEBUG_PORT:$DEBUG_PORT
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 volumes:
   mysql-data:
